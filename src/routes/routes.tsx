@@ -10,7 +10,7 @@ function RoutesApp() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/categories" element={<Categories />} />
-        <Route path="/categories/category/new" element={<NewCategory />} />
+        <Route path="/categories/category/new/:categoryId" element={<NewCategory />} />
       </Routes>
     </BrowserRouter>
   );

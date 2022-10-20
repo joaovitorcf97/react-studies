@@ -5,7 +5,7 @@ import { api } from '../../services/api';
 import './styles.css';
 
 function NewCategory() {
-  const [id, setId] = useState(null);
+  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [color, setCoLor] = useState('');
   const { categoryId } = useParams();
@@ -26,31 +26,36 @@ function NewCategory() {
     }
   }, [categoryId]);
 
-  const data = {
-    name,
-    color,
-  };
 
-  async function createNewCategory(e: React.FormEvent<HTMLFormElement>) {
+
+  async function sabeOrUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const data = {
+      name,
+      color,
+    };
 
     try {
-      await api.post('category/create', data, authorization);
-      navigate('/categories');
+      if (categoryId === '0') {
+        await api.post('category/create', data, authorization);
+      } else {
+        await api.put(`category/update/${categoryId}`, data, authorization);
+      }
     } catch (error) {
       alert('Faild! try again!');
     }
+    navigate('/categories');
   }
 
   async function loadCategory() {
     try {
-      const response = await api.get(`category/find/${categoryId}`, authorization);
+      const response = await api.get(`/category/find-one/${categoryId}`, authorization);
 
       setId(response.data.id);
-      setId(response.data.title);
-      setId(response.data.cor);
+      setName(response.data.name);
+      setCoLor(response.data.cor);
 
-      navigate('/categories');
+
     } catch (error) {
       alert('Faild! try again!');
       navigate('/categories');
@@ -61,26 +66,30 @@ function NewCategory() {
     <div className="new-category-container">
       <div className="content">
         <section className="form">
-          <h1>Add new Category</h1>
+          <h1>{categoryId === '0' ? 'Add' : 'Update'} new Category</h1>
 
-          <p>Enter the category information and click on 'Add'!{categoryId}</p>
+          <p>Enter the category information and click on {categoryId === '0' ? 'Add' : 'Update'}!</p>
           <Link to='/categories' className="back-link">
             <FiArrowLeft size={16} color="#251fc5" />
             Home
           </Link>
         </section>
-        <form onSubmit={createNewCategory}>
+        <form onSubmit={sabeOrUpdate}>
           <input
+            required
             type="text"
             placeholder="Title"
+            value={name}
             onChange={e => setName(e.target.value)}
           />
           <input
+            required
             type="text"
             placeholder="Cor"
+            value={color}
             onChange={e => setCoLor(e.target.value)}
           />
-          <button className='button'>Add</button>
+          <button className='button'>{categoryId === '0' ? 'Add' : 'Update'}</button>
         </form>
       </div>
     </div>

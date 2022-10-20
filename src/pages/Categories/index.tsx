@@ -37,6 +37,7 @@ function Categories() {
     try {
       navigate(`/categories/category/new/${id}`);
     } catch (erro) {
+      console.log('Error');
       alert('Error');
     }
   }
@@ -75,8 +76,8 @@ function Categories() {
 
       <ul>
         {
-          categories.map(category => (
-            <li>
+          categories.map((category, index) => (
+            <li key={index}>
               <strong>Category</strong>
               <p>{category.name}</p>
               <strong>Author</strong>
